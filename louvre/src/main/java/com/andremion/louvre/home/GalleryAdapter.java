@@ -35,7 +35,9 @@ import android.widget.TextView;
 
 import com.andremion.louvre.R;
 import com.andremion.louvre.util.AnimationHelper;
+import com.andremion.louvre.util.GlideApp;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
@@ -157,11 +159,12 @@ class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
         String imageTransitionName = holder.itemView.getContext().getString(R.string.activity_gallery_image_transition, data.toString());
         String checkboxTransitionName = holder.itemView.getContext().getString(R.string.activity_gallery_checkbox_transition, data.toString());
         ViewCompat.setTransitionName(holder.mImageView, imageTransitionName);
-        Glide.with(holder.mImageView.getContext())
+
+        GlideApp.with(holder.mImageView.getContext())
                 .load(data)
-                .apply(RequestOptions.skipMemoryCacheOf(true)
-                        .centerCrop()
-                        .placeholder(R.color.gallery_item_background))
+                .placeholder(R.color.gallery_item_background)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .centerCrop()
                 .into(holder.mImageView);
 
         boolean selected = isSelected(position);
