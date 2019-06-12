@@ -34,9 +34,12 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 
 import com.andremion.louvre.R;
+import com.andremion.louvre.util.GlideApp;
+import com.andremion.louvre.util.GlideRequest;
 import com.andremion.louvre.util.transition.MediaSharedElementCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -142,17 +145,15 @@ class PreviewAdapter extends PagerAdapter {
         String imageTransitionName = holder.imageView.getContext().getString(R.string.activity_gallery_image_transition, data.toString());
         ViewCompat.setTransitionName(holder.imageView, imageTransitionName);
 
-        RequestOptions options = new RequestOptions()
-                .skipMemoryCache(true)
-                .fitCenter();
-        if (mDontAnimate) {
-            options.dontAnimate();
-        }
-        Glide.with(mActivity)
+        GlideRequest<Drawable> glideRequest = GlideApp.with(mActivity)
                 .load(data)
-                .apply(options)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .listener(new ImageLoadingCallback(position))
-                .into(holder.imageView);
+                .fitCenter();
+        if(mDontAnimate){
+            glideRequest.dontAnimate();
+        }
+        glideRequest.into(holder.imageView);
     }
 
     private boolean isSelected(int position) {
